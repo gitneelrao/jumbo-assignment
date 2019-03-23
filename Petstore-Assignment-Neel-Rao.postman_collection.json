@@ -1,0 +1,616 @@
+{
+	"info": {
+		"_postman_id": "c5ae2788-fba5-4334-a260-550fef361446",
+		"name": "Petstore-Assignment-Neel-Rao",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "store - Access to Petstore orders",
+			"item": [
+				{
+					"name": "Happy Path",
+					"item": [
+						{
+							"name": "Returns pet inventories by status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "962d5f06-84a0-4953-964b-51ee76934b63",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 200 OK\r",
+											"pm.test(\"response is ok\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// TC 3: Verify reponse is okay to process\r",
+											"pm.test(\"response should be okay to process\", () => {\r",
+											"    pm.response.to.not.be.error;\r",
+											"    pm.response.to.not.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"// TC 4: Verify response must be valid and have a body\r",
+											"pm.test(\"response must be valid and have a body\", () => {\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed\r",
+											"});\r",
+											"\r",
+											"// TC 5: Validate Schema\r",
+											"pm.test('Schema Validation', function() {\r",
+											"// Load the JSON Schema\r",
+											"const invSchema = JSON.parse(environment.inv);\r",
+											"// Test whether the response matches the schema\r",
+											"var user = JSON.parse(responseBody);\r",
+											"pm.expect(tv4.validate(user, invSchema)).to.be.true;\r",
+											"})\r",
+											"\r",
+											"// TC 6: Verify string \"cool name\"\r",
+											"pm.test('Verify response for record \"cool name\" ', function () {\r",
+											"     pm.expect(pm.response.text()).to.include('cool name');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "63bbf5df-e1c2-418a-9019-be010bb5ffd3",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "api-key",
+										"type": "text",
+										"value": "{{api_key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/inventory",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"inventory"
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should not be empty\n5. Json Response schema"
+							},
+							"response": []
+						},
+						{
+							"name": "Place an order for a pet",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "77ebc494-ef93-4f5d-af6c-4d8733b842ad",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 200 OK\r",
+											"pm.test(\"response is ok\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// TC 3: Verify reponse is okay to process\r",
+											"pm.test(\"response should be okay to process\", () => {\r",
+											"    pm.response.to.not.be.error;\r",
+											"    pm.response.to.not.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"// TC 4: Verify response must be valid and have a body\r",
+											"pm.test(\"response must be valid and have a body\", () => {\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed\r",
+											"});\r",
+											"\r",
+											"// TC 5: Validate Schema\r",
+											"pm.test('Schema Validation', function() {\r",
+											"// Test whether the response matches the schema\r",
+											"var user = JSON.parse(responseBody);\r",
+											"pm.expect(tv4.validate(user, \"environment.order\")).to.be.true;\r",
+											"})\r",
+											"\r",
+											"\r",
+											"// TC 6: Verify orderid and status\r",
+											"pm.test('Verify response body contains \"orderid and status as per POST order\" ', function () {\r",
+											"var jsonData = pm.response.json();   \r",
+											"let  a = pm.environment.get(\"id\");\r",
+											"pm.expect(jsonData.id).to.eql(a);\r",
+											"let  b = pm.environment.get(\"status\");\r",
+											"pm.expect(jsonData.status).to.eql(b);\r",
+											"\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "9d50f14b-aad2-485e-ab64-e1c01fe67ae4",
+										"exec": [
+											"var check = pm.environment.get(\"env\")",
+											"",
+											"if (check ===\"sandbox\") {",
+											"pm.environment.set(\"shipDate\", new Date());",
+											"}",
+											"else",
+											"throw new Error('No \"sandbox\" set');",
+											"",
+											"// Randomly generate an order data for order creation",
+											"pm.environment.set(\"order-id\", _.random(300, 350));",
+											"pm.environment.set(\"petid\", _.random(1, 5)) ;",
+											"pm.environment.set(\"quantity\", _.random(1, 5)) ;",
+											"pm.environment.set(\"status\", _.sample([ 'placed', 'approved', 'delivered' ])) ;",
+											"pm.environment.set(\"complete\", _.sample(['false','true'])) ;",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "api-key",
+										"value": "{{api_key}}",
+										"type": "text"
+									},
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"{{id}}\",\r\n  \"petId\": \"{{petid}}\",\r\n  \"quantity\": \"{{quantity}}\",\r\n  \"shipDate\": \"{{shipDate}}\",\r\n  \"status\": \"{{status}}\",\r\n  \"complete\": \"{{complete}}\"\r\n}"
+								},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/order",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										}
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should not be empty\n5. Json Response schema\n6. Check server response value of orderid and status"
+							},
+							"response": []
+						},
+						{
+							"name": "Find purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "962d5f06-84a0-4953-964b-51ee76934b63",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 200 OK\r",
+											"pm.test(\"response is ok\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// TC 3: Verify reponse is okay to process\r",
+											"pm.test(\"response should be okay to process\", () => {\r",
+											"    pm.response.to.not.be.error;\r",
+											"    pm.response.to.not.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"// TC 4: Verify response must be valid and have a body\r",
+											"pm.test(\"response must be valid and have a body\", () => {\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed\r",
+											"});\r",
+											"\r",
+											"// TC 5: Validate Schema\r",
+											"pm.test('Schema Validation', function() {\r",
+											"// Test whether the response matches the schema\r",
+											"var user = JSON.parse(responseBody);\r",
+											"pm.expect(tv4.validate(user, \"environment.order\")).to.be.true;\r",
+											"});\r",
+											"\r",
+											"// TC 6: Verify orderid and status\r",
+											"pm.test('Verify response body contains \"petid and quantity as per saved order\" ', function () {\r",
+											"var jsonData = pm.response.json();   \r",
+											"let  e = pm.environment.get(\"petid\");\r",
+											"pm.expect(jsonData.petId).to.eql(e);\r",
+											"let  f = pm.environment.get(\"quantity\");\r",
+											"pm.expect(jsonData.quantity).to.eql(f);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "api-key",
+										"type": "text",
+										"value": "{{api_key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/order/{{id}}",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id}}"
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should not be empty\n5. Json Response schema"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "49b79c01-eb24-4d71-9e10-f0cc7903cb14",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 200 OK\r",
+											"pm.test(\"response is ok\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"// TC 3: Verify reponse is okay to process\r",
+											"pm.test(\"response is okay to process\", () => {\r",
+											"    pm.response.to.not.be.error;\r",
+											"    pm.response.to.not.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"// TC 4: Verify response with No body\r",
+											"pm.test(\" Order is deleted\", () => {\r",
+											"     pm.response.to.not.have.jsonBody;\r",
+											"    \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "api-key",
+										"value": "{{api_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/order/{{id}}",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id}}"
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should be empty"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Error scenarios",
+					"item": [
+						{
+							"name": "Find purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "962d5f06-84a0-4953-964b-51ee76934b63",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 404 OK\r",
+											"pm.test(\"response status 404 Not Found\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"// TC 3: Verify reponse is okay to process\r",
+											"pm.test(\"response should be okay to process\", () => {\r",
+											"    pm.response.to.be.error;\r",
+											"    //pm.response.to.not.have.jsonBody(\"error\");\r",
+											"});\r",
+											"\r",
+											"// TC 4: Verify response must be valid and have a body\r",
+											"pm.test(\"response must be valid and have a body\", () => {\r",
+											"     pm.response.to.be.withBody;\r",
+											"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed\r",
+											"});\r",
+											"\r",
+											"// TC 5: Validate Schema\r",
+											"pm.test('Error message Schema Validation', function() {\r",
+											"var errorapi = JSON.parse(responseBody);\r",
+											"pm.expect(tv4.validate(errorapi, \"environment.response-error\")).to.be.true;\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "ed7e9e24-b2e2-4366-8c32-0a4bd3312710",
+										"exec": [
+											"pm.environment.set(\"id1\", _.random(100000, 200000));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "api-key",
+										"type": "text",
+										"value": "{{api_key}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/order/{{id1}}",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id1}}"
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should not be empty\n5. Json Response schema"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "49b79c01-eb24-4d71-9e10-f0cc7903cb14",
+										"exec": [
+											"\r",
+											"// TC 1: Verify environment as Sandbox\r",
+											"pm.test(\"environment to be sandbox\", () => {\r",
+											"    pm.expect(pm.environment.get(\"env\")).to.equal(\"sandbox\");\r",
+											"});\r",
+											"\r",
+											"// TC 2: Verify response should be 404 OK\r",
+											"pm.test(\"response is ok\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e8d1816b-c217-4d2e-8ceb-65ae9f86e994",
+										"exec": [
+											"pm.environment.set(\"id2\", _.random(-100000, -200000));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "api-key",
+										"value": "{{api_key}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {},
+								"url": {
+									"raw": "https://petstore.swagger.io/v2/store/order/{{id2}}",
+									"protocol": "https",
+									"host": [
+										"petstore",
+										"swagger",
+										"io"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id2}}"
+									]
+								},
+								"description": "This request tests \n1. Test environment as \"sandbox\"\n2. Json response 200 OK\n3. Json response for no error\n4. Json should be empty"
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Folder for store"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b6f01330-4399-4468-b663-44da8883d1ea",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "0dcec282-bffd-42c2-8b3d-93ac94f81245",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b8c0c347-7d8d-4af0-a796-85bb3da4509b",
+			"key": "api_key",
+			"value": "special-key",
+			"type": "string"
+		}
+	]
+}
