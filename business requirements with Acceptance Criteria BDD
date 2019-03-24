@@ -1,0 +1,174 @@
+Application 
+
+A new buiness of renting cycle in Sydney publish a number of publicly-available Web Service APIs, providing real-time information for applications about the Cycle renting system. One of these services is to return the list of Cycles rakes, either within a geographical area, or within a certain distance from a specific point. 
+
+Understanding the requirements 
+
+From a BDD perspective, this service provides us with the capability to find a Cycle by different means. We could break this capability down into two main features:  
+
+– Finding Cycle racks by proximity, and  
+
+– Finding Cycle racks by location 
+
+Feature: Find cycle racks by proximity 
+In order to stay healthy 
+As a working professional in Sydney CBD 
+I want to find the cycle racks nearest to my current location 
+ 
+Feature: Find cycle racks by location 
+In order to plan my getaway 
+As a car-less person 
+I want to know all the cycle racks in a given location 
+
+ 
+
+Illustrating a feature with examples and rules 
+
+The business rules for the Find cycle racks by proximity feature might include: 
+
+All the cycle ranks within a given distance should be shown 
+
+The closest cycle rank should appear first 
+
+Where there are no cycle stands nearby none should be found 
+
+We can illustrate these acceptance criteria with concrete examples, like the ones shown in the Cucumber scenario below: 
+
+Scenario Outline: All the cycle ranks within a given distance should be shown 
+ 
+
+Given Neel is at <location>  
+
+When he looks for the closest cycle rank within <distance> meters 
+Then <number-of-cycles> cycle ranks should be found 
+And all of the cycle ranks should be no more than <distance> meters away 
+ 
+
+Examples: 
+ 
+
+| station | distance | number-of-Cycles| 
+| King st | 500 | 5 | 
+| Art gallery rd | 1000 | 18 | 
+ 
+
+Response sample
+
+King st       500  5 
+Chruch rd     1020 4 
+Gallery rd    1022 3 
+
+ 
+
+TC 1: All of the cycle ranks within a given distance should be displayed #1 
+
+{location=king st, distance=500m, number-of-cycle=5} 
+ 
+
+Given Neel is at King st 
+
+When he looks for the closest cycle rank with 500 meters 
+
+Get httsp://api-findcycles/…. 
+
+Then 5 cycle ranks should be found 
+
+And all of the cycles should not be more than 500 meters away. 
+
+ 
+
+Low level, technical terms, like the following: 
+
+Scenario: Should return closest cycle ranks within a given distance 
+When I call Get on /Place with parameters: 
+ 
+
+| lat | lon | radius | 
+| 21.505353 | -0.084826 | 500 | 
+ 
+
+Then I should get a response that contains at least 5 'places' entries 
+And the response should contain 'places' data: 
+
+{ 
+ 
+
+id: "CycleRank_001", 
+           url: "https://api-cycleapp/Place/cycleRank_001", 
+           commonName: "King st", 
+          distance: 0.41, 
+           placeType: "Street", 
+           lat: 21.513312, 
+           lon: -0.086724 
+} 
+ 
+
+Scenarios 
+
+Scenario# 1: Testing between the microservices internal to an application or residing within same application 
+
+For example, using selecting location and other like reserving the cycle 
+
+Test Strategy 
+
+unit testing 
+
+Change in data internal to the application needs to be verified, apart from checking the functional logic. 
+
+ contract testing 
+
+In case there are several dissimilar consumers of the service within the application 
+
+ Integration contract testing 
+
+Data being passed between the services needs to be verified and validated. 
+
+E2E 
+
+To ensure that dependency between microservices is tested at least in one flow. 
+
+ 
+
+Scenario# 2: Testing between internal microservices and a third-party service 
+
+For example, using google services for fetching response on maps in app 
+
+Test Strategy 
+
+Unit  
+
+Verify service model is catering to the requirements defined for interacting with the external service, while ensuring internal logic is maintained. 
+
+Contract 
+
+To test the expectations from consumer microservices 
+
+Integration 
+
+Can leverage sandbox environment of the third-party services 
+
+End to End 
+
+Ensure that there are no failures in other workflows that might integrate with the internal service with some monitoring tests for performance. 
+
+ 
+
+Scenario#3: Testing for microservice that is to be exposed to the public domain 
+
+For example, if this service being made available as a free public service by government portals. 
+
+Test Strategy 
+
+Unit  
+
+Test various functions that the service defines and data persistence between the services. 
+
+Contract 
+
+Assuming multiple consumers and each having specific contract 
+
+End to End 
+
+Ensure that there are no failures in other workflows that might integrate with the internal service with some monitoring tests for performance. 
+
+ 
